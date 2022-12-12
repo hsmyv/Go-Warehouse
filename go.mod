@@ -1,4 +1,4 @@
-module github.com/akhil/go-bookstore
+module github.com/hsmyv/go-warehouse
 
 go 1.19
 
