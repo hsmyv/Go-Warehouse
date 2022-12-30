@@ -1,40 +1,40 @@
 package controllers
 
-import(
+import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
-	"github.com/hsmyv/go-warehouse/pkg/utils"
+
+	"github.com/gorilla/mux"
 	"github.com/hsmyv/go-warehouse/pkg/models"
-	
+	"github.com/hsmyv/go-warehouse/pkg/utils"
 )
 
 var NewProduct models.Product
 
-func GetProduct(w http.ResponseWriter, r *http.Request){
+func GetProduct(w http.ResponseWriter, r *http.Request) {
 	newProducts := models.GetAllProducts()
-	res, _ :=json.Marshal(newProducts)
+	res, _ := json.Marshal(newProducts)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
 
-func GetproductById(w http.ResponseWriter, r *http.Request){
+func GetproductById(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	productId := vars["productId"]
-	ID, err := strconv.ParseInt(productId, 0,0)
-	if err != nil{
+	ID, err := strconv.ParseInt(productId, 0, 0)
+	if err != nil {
 		fmt.Println("error while parsing")
 	}
 	productDetails, _ := models.GetproductById(ID)
-	res, _ :=json.Marshal(productDetails)
+	res, _ := json.Marshal(productDetails)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
-func CreateProduct(w http.ResponseWriter, r *http.Request){
+func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	CreateProduct := &models.Product{}
 	utils.ParseBody(r, CreateProduct)
 	b := CreateProduct.CreateProduct()
@@ -43,11 +43,11 @@ func CreateProduct(w http.ResponseWriter, r *http.Request){
 	w.Write(res)
 }
 
-func DeleteProduct(w http.ResponseWriter, r *http.Request){
+func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	productId := vars["productId"]
-	ID, err := strconv.ParseInt(productId, 0,0)
-	if err != nil{
+	ID, err := strconv.ParseInt(productId, 0, 0)
+	if err != nil {
 		fmt.Println("error while parsing")
 	}
 	product := models.DeleteProduct(ID)
@@ -57,25 +57,25 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request){
 	w.Write(res)
 }
 
-func UpdateProduct(w http.ResponseWriter, r *http.Request){
+func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	var UpdateProduct = &models.Product{}
 	utils.ParseBody(r, UpdateProduct)
 	vars := mux.Vars(r)
 	productId := vars["productId"]
-	ID, err := strconv.ParseInt(productId, 0,0)
-	if err != nil{
+	ID, err := strconv.ParseInt(productId, 0, 0)
+	if err != nil {
 		fmt.Println("error while parsing")
 	}
-	productDetails, db:=models.GetproductById(ID)
+	productDetails, db := models.GetproductById(ID)
 
-	if UpdateProduct.Name != ""{
+	if UpdateProduct.Name != "" {
 		productDetails.Name = UpdateProduct.Name
 	}
-	if UpdateProduct.Price_buy != ""{
+	if UpdateProduct.Price_buy != "" {
 		productDetails.Price_buy = UpdateProduct.Price_buy
 	}
-	if UpdateProduct.Name != ""{
-		productDetails.Price_buy = UpdateProduct.Price_buy
+	if UpdateProduct.Price_sold != "" {
+		productDetails.Price_sold = UpdateProduct.Price_sold
 	}
 
 	db.Save(&productDetails)
